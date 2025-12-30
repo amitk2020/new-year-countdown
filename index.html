@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>New Year Countdown</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background:
+                linear-gradient(rgba(0, 0, 0, .45), rgba(0, 0, 0, .45)),
+                url("bg.jpg") center / cover no-repeat;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ---------- MAIN ---------- */
+        #container {
+            text-align: center;
+            color: white;
+        }
+
+        #title {
+            font-size: 4vw;
+            margin-bottom: 20px;
+        }
+
+        #timer {
+            font-size: 10vw;
+            font-weight: 800;
+            letter-spacing: 6px;
+            text-shadow: 0 0 30px rgba(255, 255, 255, .7);
+            animation: glow 2s infinite alternate;
+        }
+
+        /* ---------- EFFECTS ---------- */
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(255, 255, 255, .4);
+            }
+
+            to {
+                text-shadow: 0 0 40px rgba(255, 255, 255, 1);
+            }
+        }
+
+        .final {
+            color: #ffeb3b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* ---------- CONFETTI ---------- */
+        .confetti {
+            position: fixed;
+            top: -50px;
+            font-size: 3vw;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* ---------- UI ---------- */
+        #hint {
+            margin-top: 30px;
+            font-size: 1.2vw;
+            opacity: 0.8;
+        }
+
+        button {
+            position: fixed;
+            background: rgba(255, 255, 255, .2);
+            border: none;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        #castBtn {
+            top: 20px;
+            right: 20px;
+            display: none;
+        }
+
+        #testBtn {
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 193, 7, .85);
+            color: black;
+            font-weight: bold;
+            display: none;
+        }
+
+        /* ---------- HAPPY NEW YEAR ---------- */
+        #newYear {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            background: rgba(0, 0, 0, .4);
+            z-index: 10;
+        }
+
+        #newYear h1 {
+            font-size: 8vw;
+            font-weight: 900;
+            color: #00f5ff;
+            animation: glowText 2s infinite alternate, slideIn 0.8s ease-out;
+            text-align: center;
+            letter-spacing: 8px;
+            text-shadow: 0 0 20px #ff006e, 0 0 40px #ffb703, 0 0 60px #00f5ff;
+        }
+
+        @keyframes slideIn {
+            0% {
+                transform: scale(0) translateY(-50px);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes glowText {
+            0% {
+                text-shadow: 0 0 20px #ff006e, 0 0 40px #ffb703, 0 0 60px #00f5ff;
+                color: #00f5ff;
+            }
+
+            50% {
+                text-shadow: 0 0 40px #ff006e, 0 0 60px #ffb703, 0 0 80px #00f5ff;
+                color: #ffb703;
+            }
+
+            100% {
+                text-shadow: 0 0 60px #ff006e, 0 0 80px #ffb703, 0 0 100px #00f5ff;
+                color: #ff006e;
+            }
+        }
+
+        @keyframes colorShift {
+            0% {
+                color: #00f5ff;
+            }
+
+            50% {
+                color: #ffb703;
+            }
+
+            100% {
+                color: #ff006e;
+            }
+        }
+
+        /* ---------- FIREWORKS ---------- */
+        .firework {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: explode 1.5s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(15);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="testBtn">🧪 TEST 10s</button>
+    <button id="castBtn">📺 CAST</button>
+
+    <div id="container">
+        <div id="title">🎉New Year Countdown 🎉</div>
+        <div id="timer">Loading…</div>
+        <div id="hint">Tap / Click once to enable music 🔊</div>
+    </div>
+
+    <audio id="music" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    <div id="newYear">
+        <h1>HAPPY NEW YEAR</h1>
+    </div>
+    <script>
+        /* ---------- CAST HELP ---------- */
+        document.getElementById("castBtn").onclick = () => {
+            alert("Chrome → Menu (⋮) → Cast → Cast Tab → Select TV");
+        };
+
+        /* ---------- MUSIC ---------- */
+        document.body.addEventListener("click", () => {
+            document.getElementById("music").play();
+            document.getElementById("hint").style.display = "none";
+        }, { once: true });
+
+        /* ---------- TIME TARGET ---------- */
+        const REAL_TARGET = new Date("2026-01-01T00:00:00+13:00").getTime();
+        let target = REAL_TARGET;
+
+        const timer = document.getElementById("timer");
+        let interval;
+
+        /* ---------- FORMAT TIME ---------- */
+        function formatTime(diff) {
+            const totalSeconds = Math.max(0, Math.floor(diff / 1000));
+
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+
+            return `${String(h).padStart(2, '0')} : ${String(m).padStart(2, '0')} : ${String(s).padStart(2, '0')}`;
+        }
+
+        /* ---------- START COUNTDOWN ---------- */
+        function startCountdown() {
+            clearInterval(interval);
+            timer.classList.remove("final");
+
+            interval = setInterval(() => {
+                const diff = target - Date.now();
+
+                if (diff <= 0) {
+                    clearInterval(interval);
+                    timer.style.display = "none";
+                    showHappyNewYear();
+                    return;
+                }
+
+                if (diff <= 10000) {
+                    timer.classList.add("final");
+                } else {
+                    timer.classList.remove("final");
+                }
+
+                timer.innerHTML = formatTime(diff);
+            }, 1000);
+        }
+
+        /* ---------- TEST BUTTON ---------- */
+        document.getElementById("testBtn").onclick = () => {
+            target = Date.now() + 11000; // force last 10 seconds
+            startCountdown();
+        };
+
+        /* ---------- CONFETTI ---------- */
+        function showHappyNewYear() {
+            document.getElementById("container").style.display = "none";
+            document.getElementById("newYear").style.display = "flex";
+
+            setInterval(() => {
+                createFirework();
+            }, 700);
+        }
+
+        function createFirework() {
+            const fw = document.createElement("div");
+            fw.className = "firework";
+
+            fw.style.left = Math.random() * 100 + "vw";
+            fw.style.top = Math.random() * 60 + "vh";
+            fw.style.background =
+                `radial-gradient(circle, white, hsl(${Math.random() * 360},100%,60%))`;
+
+            document.body.appendChild(fw);
+
+            setTimeout(() => fw.remove(), 1500);
+        }
+
+        /* ---------- INIT ---------- */
+        startCountdown();
+    </script>
+    <footer
+        style="position:fixed; bottom:5px; width:100%; text-align:center; font-size:0.8rem; color:#ccc; background:rgba(0,0,0,0.4); padding:5px 0;">
+        Music: "Happy New Year" by Epic Spectrum — <a href="https://freetouse.com/music" target="_blank" rel="noopener"
+            style="color:#eee;">freetouse.com</a>
+    </footer>
+</body>
+
+</html>
