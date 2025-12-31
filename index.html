@@ -118,7 +118,6 @@
             background: rgba(255, 193, 7, .85);
             color: black;
             font-weight: bold;
-            display: none;
         }
 
         /* ---------- HAPPY NEW YEAR ---------- */
@@ -129,7 +128,7 @@
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            background: rgba(0, 0, 0, .4);
+            background: rgba(0, 0, 0, .2);
             z-index: 10;
         }
 
@@ -223,6 +222,12 @@
     <audio id="music" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
+
+    <video id="fireworksVideo" autoplay muted
+        style="position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none;">
+        <source src="fireworks.mp4" type="video/mp4">
+    </video>
+
     <div id="newYear">
         <h1>HAPPY NEW YEAR</h1>
     </div>
@@ -261,8 +266,16 @@
             clearInterval(interval);
             timer.classList.remove("final");
 
+            // Display immediately
+            let diff = target - Date.now();
+            if (diff <= 10000) {
+                timer.classList.add("final");
+            }
+            timer.innerHTML = formatTime(diff);
+
+            // Update more frequently for better accuracy
             interval = setInterval(() => {
-                const diff = target - Date.now();
+                diff = target - Date.now();
 
                 if (diff <= 0) {
                     clearInterval(interval);
@@ -278,7 +291,7 @@
                 }
 
                 timer.innerHTML = formatTime(diff);
-            }, 1000);
+            }, 100);
         }
 
         /* ---------- TEST BUTTON ---------- */
@@ -290,7 +303,12 @@
         /* ---------- CONFETTI ---------- */
         function showHappyNewYear() {
             document.getElementById("container").style.display = "none";
+            document.getElementById("fireworksVideo").style.display = "block";
             document.getElementById("newYear").style.display = "flex";
+            document.getElementById("newYear").style.zIndex = "10";
+
+            // Play video
+            document.getElementById("fireworksVideo").play();
 
             setInterval(() => {
                 createFirework();
@@ -314,11 +332,7 @@
         /* ---------- INIT ---------- */
         startCountdown();
     </script>
-    <footer
-        style="position:fixed; bottom:5px; width:100%; text-align:center; font-size:0.8rem; color:#ccc; background:rgba(0,0,0,0.4); padding:5px 0;">
-        Music: "Happy New Year" by Epic Spectrum — <a href="https://freetouse.com/music" target="_blank" rel="noopener"
-            style="color:#eee;">freetouse.com</a>
-    </footer>
+
 </body>
 
 </html>
