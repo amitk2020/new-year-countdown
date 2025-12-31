@@ -223,7 +223,7 @@
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
-    <video id="fireworksVideo" autoplay muted
+    <video id="fireworksVideo" autoplay
         style="position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 5; display: none;">
         <source src="fireworks.mp4" type="video/mp4">
     </video>
@@ -307,7 +307,7 @@
             document.getElementById("newYear").style.display = "flex";
             document.getElementById("newYear").style.zIndex = "10";
 
-            // Play video
+            // Play video with built-in audio
             document.getElementById("fireworksVideo").play();
 
             setInterval(() => {
